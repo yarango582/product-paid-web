@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/App.module.css';
+import styles from '../styles/ProductSkeleton.module.css';
 
 const ProductSkeleton: React.FC = () => {
   return (

@@ -13,7 +13,14 @@ const App: React.FC = () => {
   const { products, loading: productsLoading, error: productsError } = useProducts();
   const { transactions, setTransactions, loading: transactionsLoading, error: transactionsError } = useTransactions();
 
-  if (productsLoading || transactionsLoading) return <div>Cargando...</div>;
+  if (productsLoading || transactionsLoading) return (
+    <div className={styles.loading}>
+      <div className={styles.spinner}></div>
+      <div>
+        Cargando datos...
+      </div>
+    </div>
+  );
   if (productsError || transactionsError) return <div>Error al cargar los datos</div>;
 
   return (
@@ -31,7 +38,7 @@ const App: React.FC = () => {
         </header>
         <main className={styles.main}>
           <Routes>
-            <Route path="/" element={<ProductList products={products} loading error={null}/>} />
+            <Route path="/" element={<ProductList products={products} loading={productsLoading} error={productsError}/>} />
             <Route
               path="/products/:id"
               element={<ProductDetails products={products} />}
