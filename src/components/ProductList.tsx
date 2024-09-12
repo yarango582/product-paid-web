@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Product } from '../types';
 import ProductSkeleton from './ProductSkeleton';
 import styles from '../styles/ProductList.module.css';
+import { formatCurrency } from '../utils/currency.util';
 
 interface ProductListProps {
   products: Product[];
@@ -14,14 +15,6 @@ export const ProductList: React.FC<ProductListProps> = ({ products, loading, err
   if (error) {
     return <div className={styles.error}>Error: {error}</div>;
   }
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-    }).format(value);
-  };
 
   return (
     <div className={styles.productGrid}>

@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Product } from '../types';
 import styles from '../styles/ProductDetails.module.css';
+import { formatCurrency } from '../utils/currency.util';
 
 interface ProductDetailsProps {
   products: Product[];
@@ -25,7 +26,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ products }) => {
       <img src={product.publicImageURL} alt={product.name} className={styles.productImage} />
       <h2 className={styles.productName}>{product.name}</h2>
       <p className={styles.productDescription}>{product.description}</p>
-      <p className={styles.productPrice}>Precio: ${product.price}</p>
+      <p className={styles.productPrice}>Precio: {formatCurrency(product.price)}</p>
       <p className={styles.productStock}>Stock: {product.stockQuantity}</p>
       <button onClick={handleBuyClick} className={styles.buyButton}>
         Comprar con tarjeta de crédito

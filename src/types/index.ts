@@ -15,7 +15,7 @@ export interface Product {
   }
 
   export interface TransactionData {
-    productId: number;
+    productId: string;
     cardNumber: string;
     expiryDate: string;
     cvv: string;
