@@ -1,0 +1,55 @@
+.productSkeleton {
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 300px;
+}
+
+.skeletonImage {
+    width: 100%;
+    height: 150px;
+    background-color: #e0e0e0;
+}
+
+.skeletonTitle {
+    width: 80%;
+    height: 20px;
+    background-color: #e0e0e0;
+    margin: 10px auto;
+}
+
+.skeletonPrice {
+    width: 40%;
+    height: 20px;
+    background-color: #e0e0e0;
+    margin: 10px auto;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeletonImage,
+.skeletonTitle,
+.skeletonPrice {
+    background-image: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@media (min-width: 768px) {
+    .productSkeleton {
+        height: 300px;
+    }
+
+    .skeletonImage {
+        height: 200px;
+    }
+}
