@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Product } from '../types';
 import styles from '../styles/ProductDetails.module.css';
 import { formatCurrency } from '../utils/currency.util';
+import { setSelectedProduct } from '../store/productSlice';
+import { useDispatch } from 'react-redux';
 
 interface ProductDetailsProps {
   products: Product[];
@@ -11,6 +13,7 @@ interface ProductDetailsProps {
 export const ProductDetails: React.FC<ProductDetailsProps> = ({ products }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const product = products.find(p => p.id === id);
 
   if (!product) {
@@ -18,6 +21,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ products }) => {
   }
 
   const handleBuyClick = () => {
+    dispatch(setSelectedProduct(product));
     navigate(`/checkout/${product.id}`);
   };
 

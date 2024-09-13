@@ -1,114 +1,198 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { Product, Transaction, TransactionData } from '../types';
-import { detectCreditCardType } from '../utils/creditCardUtils';
-import { processTransaction } from '../services/api';
-import { clearCurrentTransaction } from '../store/transactionSlice';
-import styles from '../styles/CreditCardForm.module.css';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createCardToken, processTransaction } from "../services/api";
+import { setCurrentTransaction, setError } from "../store/transactionSlice";
+import { RootState } from "../store/store";
+import { detectCreditCardType } from "../utils/creditCardUtils";
+import styles from "../styles/CreditCardForm.module.css";
+import { useAlert } from "../hooks/useAlert";
+import Alert from "./Alert";
 
-interface CreditCardFormProps {
-  products: Product[];
-  onTransactionComplete: (transaction: Transaction) => void;
-}
-
-export const CreditCardForm: React.FC<CreditCardFormProps> = ({ products, onTransactionComplete }) => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+export const CreditCardForm: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { selectedProduct } = useSelector((state: RootState) => state.product);
+  const { showAlert, alert, hideAlert } = useAlert();
 
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardType, setCardType] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardHolder, setCardHolder] = useState("");
+  const [expMonth, setExpMonth] = useState("");
+  const [expYear, setExpYear] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [email, setEmail] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [cardLogo, setCardLogo] = useState("");
 
-  const product = products.find(p => p.id === id);
+  useEffect(() => {
+    const logo = detectCreditCardType(cardNumber);
+    setCardLogo(logo);
+  }, [cardNumber]);
 
-  if (!product) {
-    return <div className={styles.error}>Producto no encontrado</div>;
-  }
-
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const number = e.target.value;
-    setCardNumber(number);
-    setCardType(detectCreditCardType(number));
-  };
+  useEffect(() => {
+    if(!selectedProduct) {
+      navigate("/");
+    }
+  }, [navigate, selectedProduct]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
-      const transactionData: TransactionData = {
-        productId: product.id,
-        cardNumber,
-        expiryDate,
-        cvv
+      if(selectedProduct === null) {
+        return;
+      }
+      const { stockQuantity } = selectedProduct;
+      if(quantity > stockQuantity) {
+        showAlert("La cantidad seleccionada excede el stock disponible", "error", 5000);
+        setLoading(false);
+        return;
       };
-      const transaction = await processTransaction(transactionData);
-      dispatch(clearCurrentTransaction());
-      onTransactionComplete(transaction);
-      navigate('/transactions');
-    } catch (err) {
-      console.error(err);
-      setError('Error al procesar la transacción. Por favor, intente nuevamente.');
+      const cardTokenResponse = await createCardToken({
+        productId: selectedProduct?.id || "",
+        cardNumber: cardNumber.replace(/\s/g, ""),
+        cvv,
+        expiryDate: `${expMonth}/${expYear}`,
+        cardHolder,
+      });
+
+      const cardToken = cardTokenResponse.data.id;
+
+      const paymentResponse = await processTransaction({
+        paymentDetails: {
+          cardNumber,
+          cardHolder,
+          expirationDate: `${expMonth}/${expYear}`,
+          cvv,
+        },
+        productId: selectedProduct?.id || "",
+        quantity,
+        cardToken,
+        email,
+      });
+
+      dispatch(setCurrentTransaction(paymentResponse));
+      navigate("/summary");
+    } catch (error) {
+      console.error(error);
+      showAlert("Error procesando el pago, verifica los datos de la tarjeta", "error");
+      dispatch(setError("Error processing payment. Please try again."));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
-      <h2 className={styles.title}>Información de Tarjeta de Crédito</h2>
-      <h3 className={styles.productInfo}>Producto: {product.name} - ${product.price}</h3>
-      <div className={styles.inputGroup}>
-        <label htmlFor="cardNumber">Número de Tarjeta</label>
-        <div className={styles.inputWrapper}>
-          <input
-            type="text"
-            id="cardNumber"
-            value={cardNumber}
-            onChange={handleCardNumberChange}
-            required
-          />
-          {cardType && (
-            <img
-              src={cardType}
-              alt="Card type"
-              className={styles.cardLogo}
+    <div className={styles.pageContainer}>
+      {alert && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onClose={hideAlert}
+        />
+      )}
+      <div className={styles.formContainer}>
+        <h2 className={styles.formTitle}>Datos de la tarjeta de crédito</h2>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label htmlFor="cardNumber">Número de tarjeta</label>
+            <div className={styles.cardNumberWrapper}>
+              <input
+                type="text"
+                id="cardNumber"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+                placeholder="1234 5678 9012 3456"
+                required
+              />
+              {cardLogo && (
+                <img src={cardLogo} alt="Card logo" className={styles.cardLogo} />
+              )}
+            </div>
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="cardHolder">Nombre del titular</label>
+            <input
+              type="text"
+              id="cardHolder"
+              value={cardHolder}
+              onChange={(e) => setCardHolder(e.target.value)}
+              placeholder="John Doe"
+              required
             />
-          )}
-        </div>
+          </div>
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label htmlFor="expMonth">Mes de expiración</label>
+              <input
+                type="text"
+                id="expMonth"
+                value={expMonth}
+                onChange={(e) => setExpMonth(e.target.value)}
+                placeholder="MM"
+                maxLength={2}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="expYear">Año de expiración</label>
+              <input
+                type="text"
+                id="expYear"
+                value={expYear}
+                onChange={(e) => setExpYear(e.target.value)}
+                placeholder="YY"
+                maxLength={2}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="cvv">CVC</label>
+              <input
+                type="text"
+                id="cvv"
+                value={cvv}
+                onChange={(e) => setCvv(e.target.value)}
+                placeholder="123"
+                maxLength={4}
+                required
+              />
+            </div>
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="email">Correo electrónico</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="john@example.com"
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="quantity">Cantidad</label>
+            <input
+              type="number"
+              id="quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              min="1"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={loading}
+          >
+            {loading ? "Procesando..." : "Pagar ahora"}
+          </button>
+        </form>
       </div>
-      <div className={styles.inputGroup}>
-        <label htmlFor="expiryDate">Fecha de Expiración</label>
-        <input
-          type="text"
-          id="expiryDate"
-          value={expiryDate}
-          onChange={(e) => setExpiryDate(e.target.value)}
-          placeholder="MM/AA"
-          required
-        />
-      </div>
-      <div className={styles.inputGroup}>
-        <label htmlFor="cvv">CVV</label>
-        <input
-          type="text"
-          id="cvv"
-          value={cvv}
-          onChange={(e) => setCvv(e.target.value)}
-          required
-        />
-      </div>
-      {error && <p className={styles.error}>{error}</p>}
-      <button type="submit" disabled={loading} className={styles.submitButton}>
-        {loading ? 'Procesando...' : 'Pagar'}
-      </button>
-    </form>
+    </div>
   );
 };
 
