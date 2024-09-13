@@ -8,6 +8,7 @@ import NotFound from './components/NotFound';
 import { useProducts } from './hooks/useProducts';
 import { useTransactions } from './hooks/useTransactions';
 import styles from './styles/App.module.css';
+import Summary from './components/Summary';
 
 const App: React.FC = () => {
   const { products, loading: productsLoading, error: productsError } = useProducts();
@@ -58,6 +59,7 @@ const App: React.FC = () => {
               path="/transactions"
               element={<TransactionList transactions={transactions}/>}
             />
+            <Route path="/summary" element={<Summary />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
