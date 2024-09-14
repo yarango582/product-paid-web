@@ -20,7 +20,6 @@ const Summary: React.FC = () => {
 
   const handleBack = () => {
     window.location.reload();
-    navigate('/');
   };
 
   return (

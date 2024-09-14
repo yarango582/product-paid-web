@@ -9,7 +9,7 @@ interface ProductState {
   error: string | null;
 }
 
-const initialState: ProductState = {
+export const initialState: ProductState = {
   products: [],
   selectedProduct: null,
   loading: false,

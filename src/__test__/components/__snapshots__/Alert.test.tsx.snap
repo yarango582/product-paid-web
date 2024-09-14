@@ -1,0 +1,39 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Alert > Hace el render correctamente 1`] = `
+<DocumentFragment>
+  <div
+    class="_alert_e81bc5 _success_e81bc5"
+  >
+    <p
+      class="_message_e81bc5"
+    >
+      Mensaje de prueba
+    </p>
+    <button
+      class="_closeButton_e81bc5"
+    >
+      ×
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Alert > should render correctly 1`] = `
+<div>
+  <div
+    class="_alert_e81bc5 _success_e81bc5"
+  >
+    <p
+      class="_message_e81bc5"
+    >
+      Error
+    </p>
+    <button
+      class="_closeButton_e81bc5"
+    >
+      ×
+    </button>
+  </div>
+</div>
+`;
