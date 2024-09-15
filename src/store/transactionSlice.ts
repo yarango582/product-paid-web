@@ -7,7 +7,7 @@ interface TransactionState {
   error: string | null;
 }
 
-const initialState: TransactionState = {
+export const initialState: TransactionState = {
   currentTransaction: null,
   error: null,
 };
