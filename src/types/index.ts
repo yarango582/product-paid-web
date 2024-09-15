@@ -14,6 +14,9 @@ export interface Product {
     totalAmount: number;
     amount?: number;
     currency?: string;
+    reference?: string;
+    internalTransactionId?: string;
+    externalTransactionId?: string;
     quantity?: number;
   }
 
