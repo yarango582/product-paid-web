@@ -1,50 +1,77 @@
-# React + TypeScript + Vite
+# FullStack Test - Fronted
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Descripción
 
-Currently, two official plugins are available:
+Esta es la aplicación frontend para el proceso de pago de productos utilizando un proveedor externo. La aplicación permite a los usuarios:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Ver un producto disponible en la tienda con su descripción, precio y unidades disponibles en stock.
+2. Iniciar el proceso de pago con tarjeta de crédito.
+3. Ingresar la información de la tarjeta de crédito y los datos de entrega.
+4. Ver un resumen del pago, incluyendo el producto, cantidad y total a pagar.
+5. Procesar el pago y mostrar el resultado de la transacción.
+6. Actualizar el stock del producto después de una transacción exitosa.
 
-## Expanding the ESLint configuration
+La aplicación está diseñada con un enfoque móvil y es responsiva para adaptarse a diferentes tamaños de pantalla, centrando la experiencia en dispositivos móviles.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Tabla de Contenidos
+=================
 
-- Configure the top-level `parserOptions` property like this:
+- [FullStack Test - Fronted](#fullstack-test---fronted)
+- [Descripción](#descripción)
+- [Tabla de Contenidos](#tabla-de-contenidos)
+- [Tecnologías Utilizadas](#tecnologías-utilizadas)
+- [Estado de Cobertura de Pruebas](#estado-de-cobertura-de-pruebas)
+- [Requerimientos](#requerimientos)
+- [Instalación](#instalación)
+- [Ejecución](#ejecución)
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+
+# Tecnologías Utilizadas
+
+- React
+- Redux Toolkit
+- TypeScript
+- React Router Dom
+- CSS Modules
+- Vitest
+- React Testing Library
+- Axios
+
+# Estado de Cobertura de Pruebas
+
+![alt text](image.png)
+
+Nota: La imagen anterior muestra el estado actual de la cobertura de pruebas unitarias, superando el 80% requerido.
+
+# Requerimientos
+
+- Node.js
+- npm
+- Git
+- API Backend ([Ver Repositorio](https://github.com/yarango582/product-paid-api))
+
+# Instalación
+
+1. Clonar el repositorio
+
+```bash
+git clone
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. Instalar las dependencias
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+npm install
 ```
+
+# Ejecución
+
+1. Iniciar la aplicación
+
+```bash
+npm run dev
+```
+
+2. Abrir el navegador en la dirección [http://localhost:5173](http://localhost:5173)
+
+
