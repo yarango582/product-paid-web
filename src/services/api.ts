@@ -50,3 +50,11 @@ export const createCardToken = async (cardData: TransactionData) => {
   }
   return null;
 };
+
+export const fetchTransactions = async (): Promise<Transaction[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/payments`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch transaction');
+  }
+  return response.json();
+};

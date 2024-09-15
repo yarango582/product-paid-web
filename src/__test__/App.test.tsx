@@ -107,7 +107,7 @@ test('Renderiza correctamente cuando los datos se han cargado', () => {
     );
 
     // Verificamos que se muestra el nombre de la tienda
-    expect(screen.getByText(/Tienda de Yeison/i)).toBeInTheDocument();
+    expect(screen.getByText(/Tony Stark Shop/i)).toBeInTheDocument();
 
     // Verificamos que se renderiza la lista de productos
     expect(screen.getByText(/Producto 1/i)).toBeInTheDocument();

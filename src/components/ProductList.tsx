@@ -26,7 +26,12 @@ export const ProductList: React.FC<ProductListProps> = ({ products, loading, err
         products.map((product) => (
           <Link to={`/products/${product.id}`} key={product.id} className={styles.productItem}>
             <div className={styles.productCard}>
-              <img src={product.publicImageURL} alt={product.name} className={styles.productImage} />
+              <div className={styles.imageContainer}>
+                <img src={product.publicImageURL} alt={product.name} className={styles.productImage} />
+                {product.stockQuantity <= 0 && (
+                  <div className={styles.outOfStock}>Agotado</div>
+                )}
+              </div>
               <h3 className={styles.productName}>{product.name}</h3>
               <p className={styles.productPrice}>{formatCurrency(product.price)}</p>
             </div>

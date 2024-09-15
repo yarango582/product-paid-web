@@ -38,7 +38,7 @@ const App: React.FC = () => {
         <header className={styles.header}>
           <div className={styles.headerContent}>
             <Link to="/" className={styles.logo}>
-              Tienda de Yeison
+              Tony Stark Shop
             </Link>
             <nav className={styles.nav}>
               <ul>

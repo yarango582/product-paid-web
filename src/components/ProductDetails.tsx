@@ -5,6 +5,8 @@ import styles from '../styles/ProductDetails.module.css';
 import { formatCurrency } from '../utils/currency.util';
 import { setSelectedProduct } from '../store/productSlice';
 import { useDispatch } from 'react-redux';
+import { useAlert } from "../hooks/useAlert";
+import Alert from "./Alert";
 
 interface ProductDetailsProps {
   products: Product[];
@@ -15,18 +17,31 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ products }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const product = products.find(p => p.id === id);
+  const { showAlert, alert, hideAlert } = useAlert();
+
 
   if (!product) {
     return <div className={styles.error}>Producto no encontrado</div>;
   }
 
   const handleBuyClick = () => {
+    if (product.stockQuantity <= 0) {
+      showAlert("Producto agotado", "error", 5000);
+      return;
+    };
     dispatch(setSelectedProduct(product));
     navigate(`/checkout/${product.id}`);
   };
 
   return (
     <div className={styles.productDetails}>
+      {alert && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onClose={hideAlert}
+        />
+      )}
       <img src={product.publicImageURL} alt={product.name} className={styles.productImage} />
       <h2 className={styles.productName}>{product.name}</h2>
       <p className={styles.productDescription}>{product.description}</p>
