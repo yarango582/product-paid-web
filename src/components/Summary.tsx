@@ -29,7 +29,7 @@ const Summary: React.FC = () => {
         <p><strong>Transaction ID:</strong> {externalTransactionId}</p>
         <p><strong>Status:</strong> {status}</p>
         <p><strong>Product:</strong> {name}</p>
-        <p><strong>Price:</strong> ${price}</p>
+        <p><strong>Price:</strong> {formatCurrency(price)}</p>
         <p><strong>Total Amount:</strong> {formatCurrency(amount || 0)}</p>
       </div>
       <button onClick={handleBack} className={styles.backButton}>
